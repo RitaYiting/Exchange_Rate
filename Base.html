@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>
+		{% block title %}
+		{% endblock %}
+	</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+	<link rel = "stylesheet" href="{{url_for('static', filename='css/compare_table.css')}}">
+		{% block css %}
+		{% endblock %}
+
+		{% block js %}
+		{% endblock %}
+</head>
+
+<body>
+	<div id="banner">	
+        <nav class="navbar navbar-expand-lg bg-bodyCL">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">簡易匯率查詢</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                  <a class="nav-link act" href="/compare">各家銀行匯率</a>
+                  <a class="nav-link act" href="/compare_table">查詢與換算</a>
+                </div>
+              </div>
+            </div>
+          </nav>  
+	</div>
+
+	<div id="menu">
+        <h2>上面的選項與底下的按鈕都可以連結到指定頁面</h2>
+        <br>
+        <button type="button" class="btn btn-primary btn-lg" style="background-color: #FFF8D7;"><a href="/compare" style="text-decoration: none;">各家銀行匯率</a></button>
+        <br>
+        <br>
+        <button type="button" class="btn btn-secondary btn-lg" style="background-color: #FFF8D7;"><a href="/compare_table" style="text-decoration: none;">查詢與換算</a></button>
+	</div>
+
+	<div id="content">
+		{% block Content %}
+		{% endblock %}
+	</div>
+
+	<div id="footer">
+		Copyright © 2023 YiTing_test Inc.
+	</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

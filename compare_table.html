@@ -1,0 +1,202 @@
+<!-- compare_table.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匯率比較表格</title>
+    <link rel="stylesheet" href="static\css\compare_table.css">
+
+</head>
+<body>
+
+<form action="/compare_table" method="get">
+    <select name="currency" style="font-size: 1.5rem">
+        <option value="美元">美元</option>
+        <option value="英鎊">英鎊</option>
+        <option value="港幣">港幣</option>
+        <option value="澳幣">澳幣</option>
+        <option value="加拿大幣">加拿大幣</option>
+        <option value="新加坡幣">新加坡幣</option>
+        <option value="瑞士法郎">瑞士法郎</option>
+        <option value="日圓">日圓</option>
+        <option value="南非幣">南非幣</option>
+        <option value="瑞典幣">瑞典幣</option>
+        <option value="紐元">紐元</option>
+        <option value="泰幣">泰幣</option>
+        <option value="菲國比索">菲國比索</option>
+        <option value="印尼幣">印尼幣</option>
+        <option value="歐元">歐元</option>
+        <option value="韓元">韓元</option>
+        <option value="越南盾">越南盾</option>
+        <option value="馬來幣">馬來幣</option>
+        <option value="人民幣">人民幣</option>
+    </select>
+    <input type="submit" style="font-size: 1.2rem" />
+</form>
+
+<div id="area1">
+<h2><span>【{{ selected_currency }}】</span> 匯率比較結果：</h2>
+</div>
+
+<div id="area2">
+{% if selected_currency %}
+    <table border="2">
+        <tr>
+            <th>銀行名稱</th>
+            <th>現金買入</th>
+            <th>現金賣出</th>
+            <th>即期買入</th>
+            <th>即期賣出</th>
+        </tr>
+        {% for banktw in filtered_tw_rates %}
+            <tr {% if banktw['cashsell'] == min_cashsell and banktw['cashsell'] != "-" %}style="background-color: #aaffaa;"{% endif %}>
+                <td>台灣銀行</td>
+                <td>{{ banktw['cashbuy'] }}</td>
+                <td>{{ banktw['cashsell'] }}</td>
+                <td>{{ banktw['spotbuy'] }}</td>
+                <td>{{ banktw['spotsell'] }}</td>
+            </tr>
+        {% endfor %}
+        {% for bankcta in filtered_cta_rates %}
+            <tr {% if bankcta['cashsell'] == min_cashsell and bankcta['cashsell'] != "-" %}style="background-color: #aaffaa;"{% endif %}>
+                <td>三信商銀</td>
+                <td>{{ bankcta['cashbuy'] }}</td>
+                <td>{{ bankcta['cashsell'] }}</td>
+                <td>{{ bankcta['spotbuy'] }}</td>
+                <td>{{ bankcta['spotsell'] }}</td>
+            </tr>
+        {% endfor %}
+        {% for banktcb in filtered_tcb_rates %}
+            <tr {% if banktcb['cashsell'] == min_cashsell and banktcb['cashsell'] != "-" %}style="background-color: #aaffaa;"{% endif %}>
+                <td>台中商銀</td>
+                <td>{{ banktcb['cashbuy'] }}</td>
+                <td>{{ banktcb['cashsell'] }}</td>
+                <td>{{ banktcb['spotbuy'] }}</td>
+                <td>{{ banktcb['spotsell'] }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>    
+    <div class="area2_a">
+    {% if min_cashsell is defined and min_cashsell != "-" %}
+        {% set is_comparable = false %}                     <!--預設false,表示還沒有找到符合min_cashsell 且 != "-"條件的銀行-->
+
+        {% for banktw in filtered_tw_rates %}
+            {% if banktw['cashsell'] != "-" and banktw['cashsell'] == min_cashsell %}
+                {% set is_comparable = true %}
+                <p><span>台灣銀行</span>匯率最佳</p>
+            {% endif %}
+        {% endfor %}
+
+        {% for bankcta in filtered_cta_rates %}
+            {% if bankcta['cashsell'] != "-" and bankcta['cashsell'] == min_cashsell %}
+                {% set is_comparable = true %}
+                <p><span>三信商銀</span>匯率最佳</p>                
+            {% endif %}
+        {% endfor %}
+
+        {% for banktcb in filtered_tcb_rates %}
+            {% if banktcb['cashsell'] != "-" and banktcb['cashsell'] == min_cashsell %}
+                {% set is_comparable = true %}
+                <p><span>台中商銀</span>匯率最佳</p>                                
+            {% endif %}
+        {% endfor %}
+
+        {% if not is_comparable %}
+            {% set all_dash = (filtered_tw_rates|map(attribute='cashsell')|list == ['-'] and 
+                            filtered_cta_rates|map(attribute='cashsell')|list == ['-'] and 
+                            filtered_tcb_rates|map(attribute='cashsell')|list == ['-']) %}
+                            
+            {% if all_dash %}
+                <p>唉呀!沒有可以比較的匯率,無法判斷喔~</p>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    </div>
+{% endif %}
+</div>
+
+<div id="area3">  
+    {% if selected_currency %}    
+    <h2>匯率兌換計算<span>(以"現金賣出"匯率最佳之銀行為換算基礎)</span></h2>
+    <table border="2" class="area3_1">
+        <tr>
+            <p>新台幣兌{{ selected_currency }}：</p>
+            <th>{{ selected_currency }}匯率</th>
+            <th>輸入欲換算之新台幣金額</th>
+            <th>匯兌後的{{ selected_currency }}金額</th>
+        </tr>
+        {% for bank in filtered_tw_rates %}
+            {% if bank['cashsell'] != "-" %}
+            <tr>
+                <td>{{ bank['cashsell'] }}</td>
+                <td><input type="text" id="{{ bank['currency'] }}_input" oninput="calculateConversion('{{ bank['currency'] }}', {{ bank['cashsell'] }})"></td>
+                <td><span id="{{ bank['currency']}}_result">0.00</span></td>
+            </tr>                
+            {% endif %}
+        {% endfor %}
+    </table>
+    <br>
+    <table border="2" class="area3_2">
+        <tr>
+            <p>{{ selected_currency }}兌新台幣：</p>
+            <th>{{ selected_currency }}匯率</th>
+            <th>輸入欲換算之{{ selected_currency }}金額</th>
+            <th>匯兌後的新台幣金額</th>
+        </tr>
+        {% for bank1 in filtered_tw_rates %}
+            {% if bank1['cashsell'] != "-" %}
+            <tr>
+                <td>{{ bank1['cashsell'] }}</td>
+                <td><input type="text" id="{{ bank1['currency'] }}_input1" oninput="calculateConversion_2('{{ bank1['currency'] }}', {{ bank1['cashsell'] }})"></td>
+                <td><span id="{{ bank1['currency']}}_result1">0.00</span></td>
+            </tr>                
+            {% endif %}
+        {% endfor %}            
+    </table>    
+</div>
+{% endif %}
+
+<script>
+    function calculateConversion(currency, cashsellRate) {
+        // 獲取輸入值
+        var inputValue = parseFloat(document.getElementById(currency + "_input").value) || 0;
+    
+        // console.log("Input Value:", inputValue);
+        // console.log("Cashsell Rate:", cashsellRate);
+    
+        // 計算結果並顯示
+        if (cashsellRate !== 0) {
+            var result = (inputValue / cashsellRate).toFixed(2);
+            // console.log("Result:", result);
+            document.getElementById(currency + "_result").innerText = result;
+        } else {
+            console.warn("Warning: cashsellRate is 0");
+        }
+    }
+
+    function calculateConversion_2(currency, cashsellRate) {
+        // 獲取輸入值
+        var inputValue = parseFloat(document.getElementById(currency + "_input1").value) || 0;
+    
+        // console.log("Input Value:", inputValue);
+        // console.log("Cashsell Rate:", cashsellRate);
+    
+        // 計算結果並顯示
+        if (cashsellRate !== 0) {
+            var result1 = (cashsellRate * inputValue).toFixed(2);
+            // console.log("Result:", result);
+            document.getElementById(currency + "_result1").innerText = result1;
+        } else {
+            console.warn("Warning: cashsellRate is 0");
+        }
+    }
+</script>
+
+
+
+</body>
+</html>

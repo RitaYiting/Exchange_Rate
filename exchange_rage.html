@@ -1,0 +1,75 @@
+{% extends 'Base.html' %}
+
+{% block title %}
+銀行匯率
+{% endblock %}
+
+{% block css %}
+<link rel = "stylesheet" href="{{url_for('static', filename='css/compare.css')}}">
+{% endblock %}
+
+{% block Content %}
+<div id="bankRate">
+    <h1>各家銀行即時匯率</h1>
+
+    <div class="A1"><h3>台灣銀行:</h3></div>
+    <table border="2">
+        <tr>
+            <th style="font-size: 1rem">匯率名稱</th>
+            <th style="font-size: 1rem">現金買入</th>
+            <th style="font-size: 1rem">現金賣出</th>
+            <th style="font-size: 1rem">即期買入</th>
+            <th style="font-size: 1rem">即期賣出</th>
+        </tr>
+        {% for tw in tw_rates %}
+            <tr>
+                <td style="font-size: 1rem; font-weight: bold; text-align: center; color: #2e00d9; padding: 0.2rem 2rem;">{{ tw.currency}}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ tw.cashbuy }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ tw.cashsell }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ tw.spotbuy }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ tw.spotsell }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <div class="A1"><h3>三信商銀:</h3></div>
+    <table border="2">        
+        <tr>
+            <th style="font-size: 1rem">匯率名稱</th>
+            <th style="font-size: 1rem">現金買入</th>
+            <th style="font-size: 1rem">現金賣出</th>
+            <th style="font-size: 1rem">即期買入</th>
+            <th style="font-size: 1rem">即期賣出</th>
+        </tr>        
+        {% for cta in cta_rates %}
+            <tr>
+                <td style="font-size: 1rem; font-weight: bold; text-align: center; color: #2e00d9; padding: 0.2rem 2rem;">{{ cta.currency }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ cta.cashbuy }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ cta.cashsell }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ cta.spotbuy }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ cta.spotsell }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <div class="A1"><h3>台中商銀:</h3></div>
+    <table border="2">        
+        <tr>
+            <th style="font-size: 1rem">匯率名稱</th>
+            <th style="font-size: 1rem">現金買入</th>
+            <th style="font-size: 1rem">現金賣出</th>
+            <th style="font-size: 1rem">即期買入</th>
+            <th style="font-size: 1rem">即期賣出</th>
+        </tr>     
+        {% for tcb in tcb_rates %}
+            <tr>
+                <td style="font-size: 1rem; font-weight: bold; text-align: center; color: #2e00d9; padding: 0.2rem 2rem;">{{ tcb.currency }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ tcb.cashbuy }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ tcb.cashsell }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ tcb.spotbuy }}</td>
+                <td style="font-size: 1rem; font-weight: bold; text-align: right; padding-left: 3rem">{{ tcb.spotsell }}</td>
+            </tr>
+        {% endfor %}                   
+    </table>
+</div>
+{% endblock %}
